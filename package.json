@@ -1,0 +1,28 @@
+{
+  "name": "cypress-test",
+  "version": "1.0.0",
+  "description": "My first foray into Cypress testing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:open": "npx cypress open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1Copenut/cypress-test.git"
+  },
+  "keywords": [
+    "cypress",
+    "end-to-end",
+    "testing"
+  ],
+  "author": "Trevor Pierce",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/1Copenut/cypress-test/issues"
+  },
+  "homepage": "https://github.com/1Copenut/cypress-test#readme",
+  "devDependencies": {
+    "cypress": "^3.4.1"
+  }
+}
