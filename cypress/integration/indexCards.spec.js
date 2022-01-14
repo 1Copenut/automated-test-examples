@@ -21,6 +21,10 @@ describe('First real test', () => {
     cy.focused().tab();
     cy.focused().should('have.id', 'card-3-id');
   });
+
+  it('Checks for the correct semantic stucture', () => {
+    cy.axTree().snapshot();
+  });
 });
 
 

@@ -23,3 +23,14 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+// https://medium.com/factset/the-automated-ui-testing-methodology-you-need-to-try-9ce4d8afe623#e086
+Cypress.Commands.add("axTree", () => {
+  return Cypress.automation("remote:debugger:protocol", {
+    command: "Accessibility.enable",
+  }).then(() => {
+    return Cypress.automation("remote:debugger:protocol", {
+      command: "Accessibility.getFullAXTree",
+    });
+  });
+});
