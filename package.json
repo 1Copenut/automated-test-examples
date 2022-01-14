@@ -4,7 +4,7 @@
   "description": "My first foray into Cypress testing",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "http-server -p 8080 -c-1",
     "cypress:open": "npx cypress open"
   },
   "repository": {
@@ -23,7 +23,8 @@
   },
   "homepage": "https://github.com/1Copenut/cypress-test#readme",
   "devDependencies": {
-    "cypress": "^7.3.0",
-    "cypress-plugin-tab": "^1.0.3"
+    "cypress": "^9.2.1",
+    "cypress-plugin-tab": "^1.0.5",
+    "http-server": "^14.1.0"
   }
 }
