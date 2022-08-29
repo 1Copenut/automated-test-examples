@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/1Copenut/cypress-test#readme",
   "devDependencies": {
-    "cypress": "^9.2.1",
+    "cypress": "^10.6.0",
     "cypress-plugin-tab": "^1.0.5",
     "http-server": "^14.1.0"
   }
