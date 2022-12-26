@@ -1,6 +1,5 @@
 /// <reference types="../"/>
 
-import { defaultContext, defaultAxeConfig } from "./defaultAxeConfig";
 import { Result } from "axe-core";
 
 const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
@@ -45,7 +44,7 @@ const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
     );
   }
 
-  // Print the violations to ustom logging function
+  // Print the violations to custom logging function
   cy.task("logA11y", violationData);
 };
 
@@ -57,15 +56,4 @@ const throwOnViolation = (violations: Result[]) => {
   printViolations(violations);
 };
 
-Cypress.Commands.add(
-  "runAxe",
-  ({ reportOnly, axeContext, axeConfig, callback } = {}) => {
-    cy.injectAxe();
-    cy.checkA11y(
-      axeContext ?? defaultContext,
-      axeConfig ?? defaultAxeConfig,
-      callback ?? reportOnly ? reportOnViolation : throwOnViolation,
-      reportOnly
-    );
-  }
-);
+export { reportOnViolation, throwOnViolation };
