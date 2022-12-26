@@ -18,7 +18,7 @@ export default defineConfig({
               console.log("========================================");
             }
 
-            // Violation number N
+            // Description refuses to line up vertically
             console.log(`Violation ${i + 1}`);
             for (let key in violation) {
               if (typeof violation[key] === "string" && key === "description") {
@@ -27,7 +27,7 @@ export default defineConfig({
                 );
               }
 
-              // Description refuses to line up vertically
+              // Align keys and values vertically
               if (typeof violation[key] === "string" && key !== "description") {
                 console.log(
                   `${capitalizeFirstLetter(key)}:\t\t${violation[key]}`
