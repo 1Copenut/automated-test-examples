@@ -2,6 +2,8 @@
 
 import { Result } from "axe-core";
 
+import { defaultContext, defaultAxeConfig } from "./defaultAxeConfig";
+
 const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
   // Destructure data points from violation objects to create readable output
   const violationData = violations.map(
@@ -21,7 +23,7 @@ const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
       "log",
       `
 ========================================
-* A11Y REPORT MODE ONLY
+* A11Y REPORT-ONLY MODE
 * ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
         violations.length === 1 ? "was" : "were"
       } logged to stdout.
@@ -36,10 +38,10 @@ const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
       "log",
       `
 ========================================
-* A11Y THROW ON VIOLATION(S)
+* A11Y VIOLATION(S)
 * ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
         violations.length === 1 ? "was" : "were"
-      } detected.
+      } thrown.
 ========================================\n`
     );
   }
@@ -56,4 +58,21 @@ const throwOnViolation = (violations: Result[]) => {
   printViolations(violations);
 };
 
-export { reportOnViolation, throwOnViolation };
+const runAxe = (
+  { reportOnly, axeContext, axeConfig, callback } = {
+    reportOnly: undefined,
+    axeContext: undefined,
+    axeConfig: undefined,
+    callback: undefined,
+  }
+) => {
+  cy.injectAxe();
+  cy.checkA11y(
+    axeContext ?? defaultContext,
+    axeConfig ?? defaultAxeConfig,
+    callback ?? reportOnly ? reportOnViolation : throwOnViolation,
+    reportOnly
+  );
+};
+
+export { runAxe, reportOnViolation, throwOnViolation };
