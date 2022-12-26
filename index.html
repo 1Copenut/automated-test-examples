@@ -1,108 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Cypress Test Suite</title>
-  </head>
-  <body data-cypress-id="cypress-test--index">
-    <header>
-      <h1>Cypress Test Suite</h1>
-    </header>
-    <main>
-      <article aria-labelledby="header-1" class="cy-article">
-        <header>
-          <h2 id="header-1">Shaun of the Dead</h2>
-        </header>
-        <div>
-          <dl>
-            <div>
-              <dt>
-                <a id="card-1-id" href="https://www.imdb.com/title/tt0365748/">Shaun of the
-                  Dead: IMDB</a>
-              </dt>
-              <dd>
-                <dfn>Genre</dfn>
-                <p>Horror / Comedy</p>
-              </dd>
-              <dd>
-                <dfn>Plot</dfn>
-                <p>Zombies are slowly but steadily taking over Shaun's small
-                town after he's had a major disagreement with Liz.</p>
-              </dd>
-              <dd>
-                <dfn>My Take</dfn>
-                <p>
-                  <em>Shaun of the Dead</em> is the best zombie movie since
-                  George A. Romero's original <em>Dawn of the Dead</em> and
-              Danny Boyle&rsquo;s <em>28 Days Later</em>.
-                </p>
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </article>
 
-      <article aria-labelledby="header-2" class="cy-article">
-        <header>
-          <h2 id="header-2">The Dark Knight</h2>
-        </header>
-        <div>
-          <dl>
-            <div>
-              <dt>
-                <a id="card-2-id" href="https://www.imdb.com/title/tt0468569/?ref_=nv_sr_1?ref_=nv_sr_1">The Dark Knight: IMDB</a>
-              </dt>
-              <dd>
-                <dfn>Genre</dfn>
-                <p>Drama</p>
-              </dd>
-              <dd>
-                <dfn>Plot</dfn>
-                <p>Batman is forced to become the villain as a new antagonist
+<head>
+  <title>Cypress Test Suite</title>
+</head>
+
+<body data-cypress-id="cypress-test--index">
+  <a href="#content" data-test-subj="cy-skip-link">Skip to content</a>
+  <header>
+    <h1>Cypress Test Suite</h1>
+  </header>
+  <main id="content">
+    <article aria-labelledby="header-1" class="cy-article">
+      <header>
+        <h2 id="header-1">Shaun of the Dead</h2>
+      </header>
+      <div>
+        <dl>
+          <div>
+            <dt>
+              <a id="card-1-id" href="https://www.imdb.com/title/tt0365748/">Shaun of the
+                Dead: IMDB</a>
+            </dt>
+            <dd>
+              <dfn>Genre</dfn>
+              <p>Horror / Comedy</p>
+            </dd>
+            <dd>
+              <dfn>Plot</dfn>
+              <p>Zombies are slowly but steadily taking over Shaun's small
+                town after he's had a major disagreement with Liz.</p>
+            </dd>
+            <dd>
+              <dfn>My Take</dfn>
+              <p>
+                <em>Shaun of the Dead</em> is the best zombie movie since
+                George A. Romero's original <em>Dawn of the Dead</em> and
+                Danny Boyle&rsquo;s <em>28 Days Later</em>.
+              </p>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </article>
+
+    <article aria-labelledby="header-2" class="cy-article">
+      <header>
+        <h2 id="header-2">The Dark Knight</h2>
+      </header>
+      <div>
+        <dl>
+          <div>
+            <dt>
+              <a id="card-2-id" href="https://www.imdb.com/title/tt0468569/">The Dark Knight:
+                IMDB</a>
+            </dt>
+            <dd>
+              <dfn>Genre</dfn>
+              <p>Drama</p>
+            </dd>
+            <dd>
+              <dfn>Plot</dfn>
+              <p>Batman is forced to become the villain as a new antagonist
                 who calls himself The Joker threatens to tear Gotham apart.</p>
-              </dd>
-              <dd>
-                <dfn>My Take</dfn>
-                <p><em>The Dark Knight</em> asks tough questions about privacy,
+            </dd>
+            <dd>
+              <dfn>My Take</dfn>
+              <p><em>The Dark Knight</em> asks tough questions about privacy,
                 the lengths people are willing to go, and privacy in the age of
                 high-tech.</p>
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </article>
-      <article aria-labelledby="header-3" class="cy-article">
-        <header>
-          <h2 id="header-3">Watchmen</h2>
-        </header>
-        <div>
-          <dl>
-            <div>
-              <dt>
-                <a id="card-3-id" href="@https://www.imdb.com/title/tt0409459/?ref_=nv_sr_2?ref_=nv_sr_2">Watchmen: IMDB</a>
-              </dt>
-              <dd>
-                <dfn>Genre</dfn>
-                <p>Drama</p>
-              </dd>
-              <dd>
-                <dfn>Plot</dfn>
-                <p>Dr. Manhattan and Ozymandius work for world peace by building
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </article>
+    <article aria-labelledby="header-3" class="cy-article">
+      <header>
+        <h2 id="header-3">Watchmen</h2>
+      </header>
+      <div>
+        <dl>
+          <div>
+            <dt>
+              <a id="card-3-id" href="https://www.imdb.com/title/tt0409459/">Watchmen:
+                IMDB</a>
+            </dt>
+            <dd>
+              <dfn>Genre</dfn>
+              <p>Drama</p>
+            </dd>
+            <dd>
+              <dfn>Plot</dfn>
+              <p>Dr. Manhattan and Ozymandius work for world peace by building
                 a new energy source, but more is afoot for vigilante heroes,
                 known as masks in this alternate universe.</p>
-              </dd>
-              <dd>
-                <dfn>My Take</dfn>
-                <p>
-                  <em>Watchmen</em> is a good, honest example of the superhero
-                  trope. A lot of movies gloss over the fact that heroes are
-                  operating outside the law and typically have a strong-arm
-                  approach to enforcement.</p>
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </article>
-   </main>
-  </body>
-</html>
+            </dd>
+            <dd>
+              <dfn>My Take</dfn>
+              <p>
+                <em>Watchmen</em> is a good, honest example of the superhero
+                trope. A lot of movies gloss over the fact that heroes are
+                operating outside the law and typically have a strong-arm
+                approach to enforcement.
+              </p>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </article>
+    <article aria-labeledby="header-4" class="cy-article">
+      <header>
+        <h2 id="header-4">The Batman</h2>
+      </header>
+      <div>
+        <dl>
+          <span>
+            <dt>
+              <a id="card-4-id" href="https://www.imdb.com/title/tt1877830/">The Batman:
+                IMDB</a>
+            </dt>
+            <dd>
+              <dfn>Genre</dfn>
+              <ul>
+                <li>Action</li>
+                <li>Crime</li>
+                <li>Drama</li>
+              </ul>
+            </dd>
+            <dd>
+              <dfn>Plot</dfn>
+              <p>When a serial killer begins murdering key political figures in Gotham, Batman is forced to investigate
+                the city's hidden corruption and question his family's involvement.</p>
+            </dd>
+            <dd>
+              <dfn>My Take</dfn>
+              <p>
+                <em>The Batman</em> was the detective story version of Batman I had been waiting for. I was quite
+                impressed with the movie, and its willingness to delve into a mysetery than an action movie. The ending
+                was a bit overdone, but otherwise an excellent addition to Batman lore.
+              </p>
+            </dd>
+          </span>
+        </dl>
+      </div>
+    </article>
+  </main>
+</body>
 
+</html>

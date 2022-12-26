@@ -4,9 +4,12 @@
   "description": "My first foray into Cypress testing",
   "main": "index.js",
   "scripts": {
-    "dev": "http-server -p 8080 -c-1",
-    "cypress:open": "npx cypress open"
+    "start": "http-server -p 8080 -c-1",
+    "cypress:dev": "npx cypress open",
+    "cypress:ci": "npx cypress run --browser chrome",
+    "lint": "tsc --noEmit --pretty --allowJs --strict cypress/**/*.cy.ts"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/1Copenut/cypress-test.git"
@@ -23,8 +26,11 @@
   },
   "homepage": "https://github.com/1Copenut/cypress-test#readme",
   "devDependencies": {
-    "cypress": "^10.6.0",
-    "cypress-plugin-tab": "^1.0.5",
-    "http-server": "^14.1.0"
+    "axe-core": "^4.6.1",
+    "cypress": "^12.2.0",
+    "cypress-axe": "^1.2.0",
+    "cypress-real-events": "^1.7.4",
+    "http-server": "^14.1.0",
+    "typescript": "^4.9.4"
   }
 }
