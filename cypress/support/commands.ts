@@ -4,17 +4,8 @@ import "cypress-real-events";
 
 // Custom commands
 import { defaultContext, defaultAxeConfig } from "./a11y/defaultAxeConfig";
-import { reportOnViolation, throwOnViolation } from "./a11y/runAxe";
+import { runAxe } from "./a11y/runAxe";
+import { repeatRealPress } from "./keyboard/repeatRealPress";
 
-Cypress.Commands.add(
-  "runAxe",
-  ({ reportOnly, axeContext, axeConfig, callback } = {}) => {
-    cy.injectAxe();
-    cy.checkA11y(
-      axeContext ?? defaultContext,
-      axeConfig ?? defaultAxeConfig,
-      callback ?? reportOnly ? reportOnViolation : throwOnViolation,
-      reportOnly
-    );
-  }
-);
+Cypress.Commands.add("runAxe", runAxe);
+Cypress.Commands.add("repeatRealPress", repeatRealPress);

@@ -23,10 +23,10 @@ describe("First real test", () => {
     cy.get('a[data-test-subj="cy-skip-link"]').focus();
     cy.realPress("Tab");
     cy.get("a#card-1-id").should("have.focus");
-    cy.realPress("Tab");
-    cy.get("a#card-2-id").should("have.focus");
-    cy.realPress("Tab");
-    cy.get("a#card-3-id").should("have.focus");
+    cy.repeatRealPress("Tab", 3);
+    cy.get("a#card-4-id").should("have.focus");
+    cy.repeatRealPress(["Shift", "Tab"], 3);
+    cy.get("a#card-1-id").should("have.focus");
     cy.runAxe({ reportOnly: true });
   });
 });

@@ -1,6 +1,10 @@
 /// <reference types="cypress" />
 
 import { ContextObject, Result, RunOptions } from "axe-core";
+import { realPress } from "cypress-real-events/commands/realPress";
+
+type KeyOrShortcut = Parameters<typeof realPress>[0];
+type RealPressOptions = Parameters<typeof realPress>[1];
 
 declare global {
   namespace Cypress {
@@ -23,6 +27,20 @@ declare global {
         axeConfig?: RunOptions;
         callback?: (violations: Result[]) => void;
       }): void;
+
+      /**
+       * Repeat common single keypresses and chords (two or three keys pressed together)
+       *
+       * @param keyToPress Pass a string to press single keys or Array<string> to press chords like Shift + Tab
+       * @param count Number of times to press a key. Defaults to 2.
+       * @param options Set pointer to "mouse" | "pen"
+       * @see https://github.com/dmtrKovalenko/cypress-real-events#cyrealpress
+       */
+      repeatRealPress(
+        keyToPress: KeyOrShortcut,
+        count?: number,
+        options?: RealPressOptions
+      ): void;
     }
   }
 }
