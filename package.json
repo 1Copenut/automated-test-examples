@@ -1,7 +1,7 @@
 {
   "name": "cypress-test",
   "version": "1.0.0",
-  "description": "My first foray into Cypress testing",
+  "description": "A repo to explore visual, functional, and accessibility testing in Cypress",
   "main": "index.js",
   "scripts": {
     "start": "http-server -p 8080 -c-1",
@@ -17,10 +17,11 @@
   "keywords": [
     "cypress",
     "end-to-end",
-    "testing"
+    "testing",
+    "accessibility"
   ],
   "author": "Trevor Pierce",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/1Copenut/cypress-test/issues"
   },

@@ -1,5 +1,5 @@
-/// <reference types="cypress" />
 /// <reference types="cypress-real-events" />
+/// <reference types="../support" />
 
 describe("Smoke test", function () {
   it("Asserts tests load", () => {
