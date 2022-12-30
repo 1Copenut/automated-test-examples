@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import { Result } from "axe-core";
 import { defineConfig } from "cypress";
 import { capitalizeFirstLetter } from "./cypress/support/helpers/capitalizeFirstLetter.js";
@@ -20,7 +21,7 @@ export default defineConfig({
           violations.forEach((violation: Result, i: number) => {
             // Add a visual divider between violations
             if (i !== 0) {
-              console.log("========================================");
+              console.log("\n========================================");
             }
 
             // Declare the total violations logged
@@ -60,14 +61,36 @@ export default defineConfig({
                 });
               }
             }
+
+            // Add a visual divider after all violations
+            if (i === violations.length - 1) {
+              console.log("\n========================================\n");
+            }
           });
-          // TODO: Add the Cypress write to JSON file
           return null;
+        },
+        sitemapURLs() {
+          return fetch(`${config.baseUrl}/sitemap.xml`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/xml",
+            },
+          })
+            .then((res) => res.text())
+            .then((xml) => {
+              const regex = /\<loc\>(.|\n)*?<\/loc\>/g;
+              const locs = [...xml.matchAll(regex)];
+              const urls = locs.map(([loc]) =>
+                loc.replace("<loc>", "").replace("</loc>", "")
+              );
+              return urls;
+            });
         },
         table(messageArr: Array<any>) {
           console.table(messageArr);
           return null;
         },
+        // TODO: Add the Cypress write to JSON file
       });
 
       return config;
