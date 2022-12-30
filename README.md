@@ -7,3 +7,4 @@
 
 ## References
 * [Setting up Cypress with axe for accessibility](https://timdeschryver.dev/blog/setting-up-cypress-with-axe-for-accessibility)
+* [SO: Typescript Cypress error when getting variable as string](https://stackoverflow.com/a/70265160)
