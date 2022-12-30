@@ -27,7 +27,7 @@ const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
 * ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
         violations.length === 1 ? "was" : "were"
       } logged to stdout.
-========================================\n`
+========================================`
     );
   }
 
@@ -42,7 +42,7 @@ const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
 * ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
         violations.length === 1 ? "was" : "were"
       } thrown.
-========================================\n`
+========================================`
     );
   }
 

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Generic HTML Demonstration</title>
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+    html,
+    body,
+    div,
+    span,
+    applet,
+    object,
+    iframe,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    blockquote,
+    pre,
+    a,
+    abbr,
+    acronym,
+    address,
+    big,
+    cite,
+    code,
+    del,
+    dfn,
+    em,
+    img,
+    ins,
+    kbd,
+    q,
+    s,
+    samp,
+    small,
+    strike,
+    strong,
+    sub,
+    sup,
+    tt,
+    var,
+    b,
+    u,
+    i,
+    center,
+    dl,
+    dt,
+    dd,
+    ol,
+    ul,
+    li,
+    fieldset,
+    form,
+    label,
+    legend,
+    table,
+    caption,
+    tbody,
+    tfoot,
+    thead,
+    tr,
+    th,
+    td,
+    article,
+    aside,
+    canvas,
+    details,
+    embed,
+    figure,
+    figcaption,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    output,
+    ruby,
+    section,
+    summary,
+    time,
+    mark,
+    audio,
+    video {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      font: inherit;
+      vertical-align: baseline;
+    }
+
+    /* HTML5 display-role reset for older browsers */
+    article,
+    aside,
+    details,
+    figcaption,
+    figure,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    section {
+      display: block;
+    }
+
+    body {
+      line-height: 1;
+    }
+
+    ol,
+    ul {
+      list-style: none;
+    }
+
+    blockquote,
+    q {
+      quotes: none;
+    }
+
+    blockquote:before,
+    blockquote:after,
+    q:before,
+    q:after {
+      content: "";
+      content: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    #blockColorblindContent {
+      display: none !important;
+    }
+
+    /* ========================================
+ * NAMESPACING KEY
+ *
+ * ac   - accessibility camp
+ * -c   - component
+ * -l   - layout
+ * -t   - typography
+ * ======================================== */
+
+    :root {
+      --color-base-blue: #001cf0;
+      --color-black: #121212;
+      --color-black-text: #424242;
+      --color-dark-gray: #525252;
+      --color-gray: #727272;
+      --color-light-blue: #e1f3f8;
+      --color-light-gray: #eee;
+      --color-base-purple: rebeccapurple;
+      --color-white: #fff;
+      --color-yellow: #ffbf47;
+
+      --font-sans-serif: Helvetica, Arial, sans-serif;
+
+      --font-size-heading-1: 3.6rem;
+      --font-size-heading-2: 3rem;
+      --font-size-heading-3: 2.4rem;
+      --font-size-heading-4: 2.1rem;
+      --font-size-heading-5: 1.8rem;
+      --font-size-heading-6: 1.5rem;
+      --font-size-heading-display: 4.8rem;
+
+      --font-weight-light: 200;
+      --font-weight-normal: 400;
+      --font-weight-bold: 700;
+
+      --typography-base-line-height: 1.5;
+    }
+
+    /* ========================================
+ * SKIP NAV
+ * ======================================== */
+    .ac-c-link--skip-nav {
+      background-color: var(--color-yellow);
+      color: var(--color-black-text);
+      display: block;
+      font-family: var(--font-sans-serif);
+      font-weight: var(--font-weight-bold);
+      left: 0;
+      outline: none !important;
+      padding: 1.25rem 3rem;
+      position: absolute;
+      top: -99rem;
+    }
+
+    .ac-c-link--skip-nav:focus {
+      top: 0;
+    }
+
+    /* ========================================
+ * LANDMARKS
+ * ======================================== */
+
+    /* GENERIC banner */
+    .ac-l-header {
+      align-items: center;
+      background: var(--color-base-purple);
+      display: flex;
+      justify-content: space-between;
+      padding: 2vh 3vw;
+    }
+
+    /* GENERIC nav */
+    .ac-l-header__nav-item {
+      border-right: 1px solid rgba(255, 255, 255, 0.33);
+      color: var(--color-white);
+      display: inline-block;
+      font-family: var(--font-sans-serif);
+      padding: 0 1.5rem 0 1rem;
+    }
+
+    .ac-l-header__nav-item:last-of-type {
+      border-right: none;
+      padding-right: 0;
+    }
+
+    .ac-l-header__nav-item>a {
+      color: inherit;
+      font-family: inherit;
+      padding: 3px 6px;
+    }
+
+    .ac-l-header__nav-item>a:focus {
+      background-color: var(--color-light-blue);
+      color: var(--color-base-blue);
+      outline: 2px solid var(--color-black);
+    }
+
+    .ac-l-header__nav-item>a.ac-l-header__nav-link--current {
+      font-weight: var(--font-weight-bold);
+      text-decoration: none;
+    }
+
+    /* GENERIC main */
+    .ac-l-main {
+      grid-column: 1 / 4;
+      grid-row: 1;
+      padding: 3rem 0;
+    }
+
+    /* GENERIC aside */
+    .ac-l-aside {
+      grid-column: 4;
+      grid-row: 1;
+      padding: 4rem 0;
+    }
+
+    /* GENERIC footer */
+    .ac-l-footer {
+      align-items: center;
+      background: var(--color-light-gray);
+      display: flex;
+      flex-direction: column;
+      height: 24rem;
+      justify-content: space-around;
+    }
+
+    .ac-l-footer__outer {
+      display: flex;
+    }
+
+    .ac-l-footer__inner {
+      margin: 0 4rem 0 0;
+    }
+
+    .ac-l-footer__inner:last-of-type {
+      margin: 0;
+    }
+
+    /* ========================================
+ * LAYOUT
+ * ======================================== */
+    .ac-grid--container {
+      display: grid;
+      grid-auto-rows: minmax(100px, auto);
+      grid-gap: 4rem;
+      grid-template-columns: repeat(4, 1fr);
+      margin: 0 auto;
+      max-width: 60vw;
+    }
+
+    /* ========================================
+ * TYPOGRAPHY
+ * ======================================== */
+    html {
+      font-size: 62.5%;
+    }
+
+    body {
+      background: #fff;
+      color: #484848;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+        Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      font-size: 1.8rem;
+      height: 100vh;
+      text-rendering: optimizeLegibility;
+    }
+
+    a {
+      color: var(--color-base-blue);
+    }
+
+    a:hover {
+      color: var(--color-base-purple);
+    }
+
+    a:focus {
+      outline: 2px solid var(--color-yellow);
+      outline-offset: 2px;
+    }
+
+    /* Typographic headings */
+    .ac-t-heading {
+      color: var(--color-black);
+      display: block;
+      font-family: var(--font-sans-serif);
+      font-size: var(--font-size-heading-1);
+      font-weight: var(--font-weight-bold);
+    }
+
+    .ac-t-heading--one {
+      color: var(--color-white);
+      font-weight: var(--font-weight-light);
+    }
+
+    .ac-t-heading--two {
+      border-top: 6px solid var(--color-light-gray);
+      font-size: var(--font-size-heading-2);
+      margin-top: 4.5rem;
+      padding-top: 1.5rem;
+    }
+
+    .ac-t-heading--three {
+      font-size: var(--font-size-heading-3);
+      font-weight: var(--font-weight-normal);
+      margin: 1rem 0 1.5rem 0;
+      padding: 0.825rem 0 0 0.25rem;
+    }
+
+    .ac-t-heading--four {
+      border-top: 3px solid var(--color-black);
+      font-size: var(--font-size-heading-4);
+      margin: 0 0 1.5rem 0;
+      padding: 0.825rem 0 0 0.25rem;
+    }
+
+    .ac-t-heading--five {
+      font-size: var(--font-size-heading-5);
+      margin: 0 0 1rem 0;
+    }
+
+    .ac-t-heading--six {
+      font-size: var(--font-size-heading-6);
+      font-weight: var(--font-weight-light);
+      text-transform: uppercase;
+    }
+
+    .ac-t-heading--display {
+      font-size: var(--font-size-heading-display);
+    }
+
+    /* Typographic paragraphs */
+    .ac-t-paragraph {
+      color: var(--color-black-text);
+      display: block;
+      font-family: Georgia, "Times New Roman", Times, serif;
+      line-height: var(--typography-base-line-height);
+      margin: 0.825rem 0 2rem 0.5rem;
+    }
+
+    .ac-t-paragraph+.ac-t-paragraph {
+      margin-bottom: 0;
+    }
+
+    /* ========================================
+ * LISTS
+ * ======================================== */
+    .ac-c-list {
+      margin-bottom: 3rem;
+    }
+
+    .ac-c-list--definition {
+      font-size: 1.6rem;
+      padding: 0 0 0 0.25rem;
+    }
+
+    .ac-c-list--definition dt {
+      font-weight: var(--font-weight-bold);
+    }
+
+    .ac-c-list--definition dd {
+      margin: 1.5rem 0 0 0;
+    }
+
+    .ac-c-list--definition span {
+      display: block;
+      line-height: 1.5;
+    }
+
+    .ac-c-list--definition span+span {
+      font-style: italic;
+    }
+
+    .ac-c-list__list-item {
+      font-family: var(--font-sans-serif);
+      list-style: square;
+      margin: 0 0 1rem 3rem;
+    }
+
+  </style>
+</head>
+
+<body data-cypress-id="cypress-test--index">
+  <!-- SKIP NAV -->
+  <a class="ac-c-link--skip-nav" href="#main">Skip to content</a>
+  <!-- Begin GENERIC header -->
+  <div class="ac-l-header">
+    <div class="ac-l-header__banner">
+      <span class="ac-t-heading ac-t-heading--one">Generic HTML Demonstration</span>
+    </div>
+    <div class="ac-l-header__nav">
+      <ul class="ac-l-header__nav-list">
+        <li class="ac-l-header__nav-item">
+          <a class="ac-l-header__nav-link" href="/anycorp/">Home</a>
+        </li>
+        <li class="ac-l-header__nav-item">
+          <a class="ac-l-header__nav-link--current" href="/anycorp/generic.html">Generic demo</a>
+        </li>
+        <li class="ac-l-header__nav-item">
+          <a href="/anycorp/semantic.html">Semantic demo</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- End GENERIC header -->
+
+  <div class="ac-grid ac-grid--container">
+    <!-- Begin GENERIC main -->
+    <div class="ac-l-main" id="main">
+      <span class="ac-t-heading ac-t-heading--display">Any Corp Scranton</span>
+      <span class="ac-t-paragraph">Leverage agile frameworks to provide a robust synopsis for high level
+        overviews. Iterative approaches to corporate strategy foster
+        collaborative thinking to further the overall value proposition.
+        Organically grow the holistic world view of disruptive innovation via
+        workplace diversity and empowerment.</span>
+      <span class="ac-t-heading ac-t-heading--three">Learn About Our History!</span>
+      <ul class="ac-c-list">
+        <li class="ac-c-list__list-item">
+          <a href="https://en.wikipedia.org/wiki/Dunder_Mifflin">Any Corp Scranton Branch</a>
+        </li>
+        <li class="ac-c-list__list-item">
+          <a href="https://en.wikipedia.org/wiki/Dunder_Mifflin#Presence_in_real_world">Our presence in the real
+            world</a>
+        </li>
+        <li class="ac-c-list__list-item">
+          <a href="https://en.wikipedia.org/wiki/Dunder_Mifflin#References">Check our references!</a>
+        </li>
+      </ul>
+      <span class="ac-t-heading ac-t-heading--two">Our Winning Agile Strategy
+      </span>
+      <span class="ac-t-paragraph">Bring to the table win-win survival strategies to ensure proactive
+        domination. At the end of the day, going forward, a new normal that
+        has evolved from generation X is on the runway heading towards a
+        streamlined cloud solution. User generated content in real-time will
+        have multiple touchpoints for offshoring.</span>
+      <span class="ac-t-paragraph">
+        <a href="https://en.wikipedia.org/wiki/Agile_software_development">Learn more about the big "A" agile
+          methodology</a>
+      </span>
+      <span class="ac-t-heading ac-t-heading--three">Why You Should Partner With Us
+      </span>
+      <span class="ac-t-paragraph">Podcasting operational change management inside of workflows to
+        establish a framework. Taking seamless key performance indicators
+        offline to maximise the long tail. Keeping your eye on the ball while
+        performing a deep dive on the start-up mentality to derive convergence
+        on cross-platform integration.</span>
+      <span class="ac-t-paragraph">Collaboratively administrate empowered markets via plug-and-play
+        networks. Dynamically procrastinate B2C users after installed base
+        benefits. Dramatically visualize customer directed convergence without
+        revolutionary ROI.</span>
+      <span class="ac-t-heading ac-t-heading--two">We Take Office Supplies to a Whole Other Level
+      </span>
+      <span class="ac-t-paragraph">Completely synergize resource taxing relationships via premier niche
+        markets. Professionally cultivate one-to-one customer service with
+        robust ideas. Dynamically innovate resource-leveling customer service
+        for state of the art customer service.</span>
+      <span class="ac-t-paragraph">Objectively innovate empowered manufactured products whereas parallel
+        platforms. Holisticly predominate extensible testing procedures for
+        reliable supply chains. Dramatically engage top-line web services
+        vis-a-vis cutting-edge deliverables.</span>
+      <span class="ac-t-heading ac-t-heading--three">Right for consumers!
+      </span>
+      <ul class="ac-c-list">
+        <li class="ac-c-list__list-item">Because we say so!</li>
+        <li class="ac-c-list__list-item">
+          Because our marketing firm says so!
+        </li>
+        <li class="ac-c-list__list-item">
+          Because our customers say so!
+        </li>
+      </ul>
+      <span class="ac-t-heading ac-t-heading--three">Right for businesses!
+      </span>
+      <ul class="ac-c-list">
+        <li class="ac-c-list__list-item">Because we say so!</li>
+        <li class="ac-c-list__list-item">
+          Because our marketing firm says so!
+        </li>
+        <li class="ac-c-list__list-item">
+          Because our customers say so!
+        </li>
+      </ul>
+    </div>
+    <!-- End GENERIC main -->
+
+    <!-- Begin GENERIC aside -->
+    <div class="ac-l-aside" id="aside">
+      <span class="ac-t-heading ac-t-heading--four">
+        Scranton Contacts
+      </span>
+      <dl class="ac-c-list ac-c-list--definition">
+        <dt>Office</dt>
+        <dd>
+          <span>Michael Scott</span>
+          <span>Branch Manager</span>
+          <span><a href="tel:444-283-2800">(444) 283-2800</a></span>
+        </dd>
+        <dd>
+          <span>Pam Beesly</span>
+          <span>Office Manager</span>
+          <span><a href="tel:444-283-2801">(444) 283-2801</a></span>
+        </dd>
+        <dd>
+          <span>Angela Martin</span>
+          <span>Accounting</span>
+          <span><a href="tel:444-283-2802">(444) 283-2802</a></span>
+        </dd>
+        <dd>
+          <span>Jim Halpert</span>
+          <span>Sales</span>
+          <span><a href="tel:444-283-2803">(444) 283-2803</a></span>
+        </dd>
+        <dd>
+          <span>Dwight Schrute</span>
+          <span>Sales</span>
+          <span><a href="tel:444-283-2804">(444) 283-2804</a></span>
+        </dd>
+        <dd>
+          <span>Stanley Hudson</span>
+          <span>Sales</span>
+          <span><a href="tel:444-283-2805">(444) 283-2805</a></span>
+        </dd>
+      </dl>
+
+      <dl class="ac-c-list ac-c-list--definition">
+        <dt>Warehouse</dt>
+        <dd>
+          <span>Darryl Philbin</span>
+          <span>Warehouse Manager</span>
+          <span><a href="tel:444-283-2806">(444) 283-2806</a></span>
+        </dd>
+        <dd>
+          <span>Roy Anderson</span>
+          <span>Warehouse</span>
+          <span><a href="tel:444-283-2807">(444) 283-2807</a></span>
+        </dd>
+        <dd>
+          <span>Val Johnson</span>
+          <span>Warehouse</span>
+          <span><a href="tel:444-283-2808">(444) 283-2808</a></span>
+        </dd>
+      </dl>
+    </div>
+    <!-- End GENERIC aside -->
+  </div>
+
+  <!-- Begin GENERIC footer -->
+  <div class="ac-l-footer">
+    <div class="ac-l-footer__outer">
+      <div class="ac-l-footer__inner">
+        <span class="ac-t-heading ac-t-heading--five">Our awards</span>
+        <ul class="ac-c-list">
+          <li class="ac-c-list__list-item">
+            <a href="https://en.wikipedia.org/wiki/Promotion_(marketing)">
+              Self-promotion 1st place</a>
+          </li>
+          <li class="ac-c-list__list-item">Self-promotion 2nd place</li>
+          <li class="ac-c-list__list-item">Self-promotion 3rd place</li>
+        </ul>
+      </div>
+      <div class="ac-l-footer__inner">
+        <span class="ac-t-heading ac-t-heading--five">Our trophies</span>
+        <ul class="ac-c-list">
+          <li class="ac-c-list__list-item">
+            <a href="https://en.wikipedia.org/wiki/National_Dodgeball_League">Dodgeball Champions 2018</a>
+          </li>
+          <li class="ac-c-list__list-item">Dodgeball Champions 2017</li>
+          <li class="ac-c-list__list-item">Dodgeball Runners-Up 2016</li>
+        </ul>
+      </div>
+      <div class="ac-l-footer__inner">
+        <span class="ac-t-heading ac-t-heading--five">Our office friends</span>
+        <ul class="ac-c-list">
+          <li class="ac-c-list__list-item">
+            <a href="https://en.wikipedia.org/wiki/Golden_Retriever">Jake the Golden Retriever</a>
+          </li>
+          <li class="ac-c-list__list-item">Morris the Tabby Cat</li>
+          <li class="ac-c-list__list-item">Tiny the Persian Kitten</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ac-l-footer__outer">
+      <span class="ac-t-heading ac-t-heading--six">COPYRIGHT ANY CORP SCRANTON 2019</span>
+    </div>
+  </div>
+  <!-- End GENERIC footer -->
+</body>
+
+</html>
