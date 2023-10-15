@@ -1,11 +1,10 @@
-import fetch from "node-fetch";
 import { Result } from "axe-core";
 import { defineConfig } from "cypress";
 import { capitalizeFirstLetter } from "./cypress/support/helpers/capitalizeFirstLetter.js";
 
 export default defineConfig({
   e2e: {
-    baseUrl: "http://localhost:8080",
+    baseUrl: "http://127.0.0.1:8080",
     setupNodeEvents(on, config) {
       on("task", {
         log(message: string) {
