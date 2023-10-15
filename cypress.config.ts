@@ -1,4 +1,3 @@
-// import fetch from "node-fetch";
 import { Result } from "axe-core";
 import { defineConfig } from "cypress";
 import { capitalizeFirstLetter } from "./cypress/support/helpers/capitalizeFirstLetter.js";
