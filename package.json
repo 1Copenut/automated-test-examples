@@ -19,7 +19,8 @@
     "cypress",
     "end-to-end",
     "testing",
-    "accessibility"
+    "accessibility",
+    "docker"
   ],
   "author": "Trevor Pierce",
   "license": "MIT",
