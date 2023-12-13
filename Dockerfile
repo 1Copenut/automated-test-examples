@@ -2,6 +2,8 @@ FROM node:20.9.0-slim
 
 WORKDIR /app
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # Install Cypress prerequisites
 RUN apt-get update \
   && apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb --no-install-recommends -y \
