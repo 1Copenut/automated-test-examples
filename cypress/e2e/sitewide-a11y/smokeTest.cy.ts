@@ -1,4 +1,4 @@
-/// <reference types="../support" />
+/// <reference types="../../support" />
 
 describe("Smoke test", function () {
   it("Asserts all pages are accessible", () => {
