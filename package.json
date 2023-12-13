@@ -4,10 +4,10 @@
   "description": "A repo to explore visual, functional, and accessibility testing in Cypress",
   "main": "index.js",
   "scripts": {
-    "start": "http-server -p 8080 -c-1",
+    "start:a11y": "http-server ./public/sitewide-a11y -p 8080 -c-1 -d false",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --browser chrome",
-    "cypress:ci": "start-server-and-test 8080 cypress:run",
+    "cypress:ci": "start-server-and-test start:a11y 8080 cypress:run",
     "lint": "tsc --noEmit --pretty --allowJs --strict cypress/**/*.cy.ts"
   },
   "type": "module",
