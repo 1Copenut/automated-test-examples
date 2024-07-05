@@ -4,7 +4,7 @@ import { Result } from "axe-core";
 
 import { defaultContext, defaultAxeConfig } from "./defaultAxeConfig";
 
-const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
+const printAxeViolationsToConsole = (violations: Result[]) => {
   // Destructure data points from violation objects to create readable output
   const violationData = violations.map(
     ({ id, description, impact, nodes, tags }) => ({
@@ -16,46 +16,21 @@ const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
     })
   );
 
-  // Print a custom message to the console in report mode
+  // Print a message highlighting number of violations on the page
   // https://github.com/component-driven/cypress-axe#reportOnly-optional-defaults-to-false
-  if (skipTestFailure) {
-    cy.task(
-      "log",
-      `
+  cy.task(
+    "log",
+    `
 ========================================
-* A11Y REPORT-ONLY MODE
+* A11Y VIOLATIONS REPORTED
 * ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
-        violations.length === 1 ? "was" : "were"
-      } logged to stdout.
+      violations.length === 1 ? "was" : "were"
+    } logged to stdout.
 ========================================`
-    );
-  }
-
-  // Print violations to the console and throw in test
-  // https://github.com/component-driven/cypress-axe#using-the-violationcallback-argument
-  if (!skipTestFailure) {
-    cy.task(
-      "log",
-      `
-========================================
-* A11Y VIOLATION(S)
-* ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
-        violations.length === 1 ? "was" : "were"
-      } thrown.
-========================================`
-    );
-  }
+  );
 
   // Print the violations to custom logging function
   cy.task("logA11y", violationData);
-};
-
-const reportOnViolation = (violations: Result[]) => {
-  printViolations(violations, true);
-};
-
-const throwOnViolation = (violations: Result[]) => {
-  printViolations(violations);
 };
 
 const runAxe = (
@@ -70,9 +45,9 @@ const runAxe = (
   cy.checkA11y(
     axeContext ?? defaultContext,
     axeConfig ?? defaultAxeConfig,
-    callback ?? reportOnly ? reportOnViolation : throwOnViolation,
+    callback ?? printAxeViolationsToConsole,
     reportOnly
   );
 };
 
-export { runAxe, reportOnViolation, throwOnViolation };
+export { runAxe };

@@ -1,6 +1,6 @@
 /// <reference types="../../support" />
 
-describe("Smoke test", function () {
+describe("A11y sitemap test", function () {
   it("Asserts all pages are accessible", () => {
     cy.task<string[]>("sitemapURLs").then((pages) => {
       pages.forEach((page) => {
