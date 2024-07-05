@@ -4,6 +4,8 @@ import { Result } from "axe-core";
 
 import { defaultContext, defaultAxeConfig } from "./defaultAxeConfig";
 
+let currentURL: string;
+
 const printAxeViolationsToConsole = (violations: Result[]) => {
   // Destructure data points from violation objects to create readable output
   const violationData = violations.map(
@@ -23,6 +25,7 @@ const printAxeViolationsToConsole = (violations: Result[]) => {
     `
 ========================================
 * A11Y VIOLATIONS REPORTED
+* ${currentURL}
 * ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
       violations.length === 1 ? "was" : "were"
     } logged to stdout.
@@ -31,6 +34,9 @@ const printAxeViolationsToConsole = (violations: Result[]) => {
 
   // Print the violations to custom logging function
   cy.task("logA11y", violationData);
+
+  // Save the violations to JSON file
+  // cy.task("saveToJSON", violationData);
 };
 
 const runAxe = (
@@ -41,6 +47,9 @@ const runAxe = (
     callback: undefined,
   }
 ) => {
+  cy.url().then((url) => {
+    currentURL = url;
+  });
   cy.injectAxe();
   cy.checkA11y(
     axeContext ?? defaultContext,

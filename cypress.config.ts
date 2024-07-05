@@ -68,6 +68,7 @@ export default defineConfig({
           });
           return null;
         },
+        // saveToJSON(dataArr: []) {},
         sitemapURLs() {
           return fetch(`${config.baseUrl}/sitemap.xml`, {
             method: "GET",
@@ -89,7 +90,6 @@ export default defineConfig({
           console.table(messageArr);
           return null;
         },
-        // TODO: Add the Cypress write to JSON file
       });
 
       return config;
