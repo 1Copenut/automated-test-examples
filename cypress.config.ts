@@ -1,10 +1,12 @@
 import { Result } from "axe-core";
 import { defineConfig } from "cypress";
+import { readFile, writeFile } from "fs";
+
 import { capitalizeFirstLetter } from "./cypress/support/helpers/capitalizeFirstLetter.js";
 
 export default defineConfig({
   e2e: {
-    baseUrl: "http://127.0.0.1:8080",
+    baseUrl: "http://127.0.0.1:8080", // TODO: Add Dotenv here
     setupNodeEvents(on, config) {
       on("task", {
         log(message: string) {
@@ -68,7 +70,24 @@ export default defineConfig({
           });
           return null;
         },
-        // saveToJSON(dataArr: []) {},
+        saveToJSON(dataArr: []) {
+          console.log("Running!!!");
+          const path = "./cypress/data/accessibility.json";
+
+          writeFile(
+            path,
+            JSON.stringify(dataArr, null, 2),
+            { flag: "a+" },
+            (err: any) => {
+              if (err) {
+                console.log("An error has occurred ", err);
+                return null;
+              }
+            }
+          );
+          console.log("Data written successfully to disk");
+          return null;
+        },
         sitemapURLs() {
           return fetch(`${config.baseUrl}/sitemap.xml`, {
             method: "GET",

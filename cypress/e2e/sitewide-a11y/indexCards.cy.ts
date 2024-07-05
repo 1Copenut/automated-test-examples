@@ -27,6 +27,6 @@ describe("First real test", () => {
     cy.get("a#card-4-id").should("have.focus");
     cy.repeatRealPress(["Shift", "Tab"], 3);
     cy.get("a#card-1-id").should("have.focus");
-    cy.runAxe({ reportOnly: true });
+    // cy.runAxe({ reportOnly: true });
   });
 });

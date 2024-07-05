@@ -36,7 +36,7 @@ const printAxeViolationsToConsole = (violations: Result[]) => {
   cy.task("logA11y", violationData);
 
   // Save the violations to JSON file
-  // cy.task("saveToJSON", violationData);
+  cy.task("saveToJSON", violationData);
 };
 
 const runAxe = (
