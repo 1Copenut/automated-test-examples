@@ -1,6 +1,6 @@
 import { Result } from "axe-core";
 import { defineConfig } from "cypress";
-import { readFile, writeFile } from "fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFile } from "fs";
 
 import { capitalizeFirstLetter } from "./cypress/support/helpers/capitalizeFirstLetter.js";
 
@@ -71,25 +71,52 @@ export default defineConfig({
           return null;
         },
         saveToJSON(dataArr: []) {
-          console.log("Running!!!");
           const path = "./cypress/data/accessibility.json";
+          const pathExists = existsSync(path);
 
-          writeFile(
-            path,
-            JSON.stringify(dataArr, null, 2),
-            { flag: "a+" },
-            (err: any) => {
+          let data;
+
+          console.log("Removing data directory");
+          rmSync("./cypress/data/", { recursive: true, force: true });
+
+          if (!pathExists) {
+            console.log("Writing first data object");
+            data = dataArr;
+            const firstData = JSON.stringify(data, null, 2);
+
+            writeFile(path, firstData, { flag: "w" }, (err: any) => {
               if (err) {
                 console.log("An error has occurred ", err);
                 return null;
               }
-            }
-          );
-          console.log("Data written successfully to disk");
+            });
+            console.log("Data written successfully to disk");
+          }
+
+          if (pathExists) {
+            console.log("Creating empty data directory");
+            mkdirSync("./cypress/data/");
+
+            console.log("Writing next data object");
+            data = JSON.parse(readFileSync(path, "utf8"));
+
+            let nextData = data.concat(dataArr);
+            nextData = JSON.stringify(nextData, null, 2);
+
+            console.log(nextData);
+
+            writeFile(path, nextData, (err) => {
+              if (err) {
+                console.log(`An error occurred: ${err}`);
+                return null;
+              }
+            });
+            console.log("Data written successfully to disk");
+          }
           return null;
         },
-        sitemapURLs() {
-          return fetch(`${config.baseUrl}/sitemap.xml`, {
+        async sitemapURLs() {
+          return await fetch(`${config.baseUrl}/sitemap.xml`, {
             method: "GET",
             headers: {
               "Content-Type": "application/xml",
