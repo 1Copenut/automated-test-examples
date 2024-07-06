@@ -4,6 +4,23 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFile } from "fs";
 
 import { capitalizeFirstLetter } from "./cypress/support/helpers/capitalizeFirstLetter.js";
 
+let firstRun = true;
+
+function writeToJsonFile(
+  filePath: string,
+  data: string | NodeJS.ArrayBufferView,
+  options?: {}
+) {
+  console.log("Writing data object");
+  writeFile(filePath, data, { ...options }, (err: any) => {
+    if (err) {
+      console.log("An error has occurred:", err);
+      return null;
+    }
+  });
+  console.log("Data written successfully to disk");
+}
+
 export default defineConfig({
   e2e: {
     baseUrl: "http://127.0.0.1:8080", // TODO: Add Dotenv here
@@ -18,7 +35,7 @@ export default defineConfig({
          * violations are written to the console. This task reports
          * them in the way that works for me, and is easily customized.
          */
-        logA11y(violations: Result[]) {
+        logAxeViolationsToConsole(violations: Result[]) {
           violations.forEach((violation: Result, i: number) => {
             // Add a visual divider between violations
             if (i !== 0) {
@@ -70,53 +87,43 @@ export default defineConfig({
           });
           return null;
         },
-        saveToJSON(dataArr: []) {
+        saveAxeViolationsToJson(dataArr: Result[]) {
+          const dir = "./cypress/data/";
+          const dirExists = existsSync(dir);
           const path = "./cypress/data/accessibility.json";
           const pathExists = existsSync(path);
 
+          // Data takes the shape of the axe-core violations array.
+          // https://www.deque.com/axe/core-documentation/api-documentation/#violations-results-array
           let data;
 
-          console.log("Removing data directory");
-          rmSync("./cypress/data/", { recursive: true, force: true });
+          if (!dirExists) {
+            mkdirSync(dir);
+          }
 
           if (!pathExists) {
-            console.log("Writing first data object");
             data = dataArr;
-            const firstData = JSON.stringify(data, null, 2);
+            data = JSON.stringify(data, null, 2);
+            firstRun = false;
 
-            writeFile(path, firstData, { flag: "w" }, (err: any) => {
-              if (err) {
-                console.log("An error has occurred ", err);
-                return null;
-              }
-            });
-            console.log("Data written successfully to disk");
+            writeToJsonFile(path, data, { flag: "w" });
           }
 
           if (pathExists) {
-            console.log("Creating empty data directory");
-            mkdirSync("./cypress/data/");
+            // Assume there was a JSON file from the previous run.
+            // This file is not meaningful because we need a current snapshot.
+            // TODO: Add a unique timestamp to each file for visualization upload.
+            data = firstRun ? [] : JSON.parse(readFileSync(path, "utf8"));
+            data = data.concat(dataArr);
+            data = JSON.stringify(data, null, 2);
+            firstRun = false;
 
-            console.log("Writing next data object");
-            data = JSON.parse(readFileSync(path, "utf8"));
-
-            let nextData = data.concat(dataArr);
-            nextData = JSON.stringify(nextData, null, 2);
-
-            console.log(nextData);
-
-            writeFile(path, nextData, (err) => {
-              if (err) {
-                console.log(`An error occurred: ${err}`);
-                return null;
-              }
-            });
-            console.log("Data written successfully to disk");
+            writeToJsonFile(path, data);
           }
           return null;
         },
         async sitemapURLs() {
-          return await fetch(`${config.baseUrl}/sitemap.xml`, {
+          return fetch(`${config.baseUrl}/sitemap.xml`, {
             method: "GET",
             headers: {
               "Content-Type": "application/xml",

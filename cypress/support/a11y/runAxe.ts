@@ -33,10 +33,10 @@ const printAxeViolationsToConsole = (violations: Result[]) => {
   );
 
   // Print the violations to custom logging function
-  cy.task("logA11y", violationData);
+  cy.task("logAxeViolationsToConsole", violationData);
 
   // Save the violations to JSON file
-  cy.task("saveToJSON", violationData);
+  cy.task("saveAxeViolationsToJson", violationData);
 };
 
 const runAxe = (
