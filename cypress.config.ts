@@ -1,10 +1,10 @@
 import { Result } from "axe-core";
 import { defineConfig } from "cypress";
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFile } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFile } from "fs";
 
 import { capitalizeFirstLetter } from "./cypress/support/helpers/capitalizeFirstLetter.js";
 
-let firstRun = true;
+let FIRST_RUN = true;
 
 function writeToJsonFile(
   filePath: string,
@@ -90,7 +90,7 @@ export default defineConfig({
         saveAxeViolationsToJson(dataArr: Result[]) {
           const dir = "./cypress/data/";
           const dirExists = existsSync(dir);
-          const path = "./cypress/data/accessibility.json";
+          const path = "./cypress/data/axeViolations.json";
           const pathExists = existsSync(path);
 
           // Data takes the shape of the axe-core violations array.
@@ -104,7 +104,7 @@ export default defineConfig({
           if (!pathExists) {
             data = dataArr;
             data = JSON.stringify(data, null, 2);
-            firstRun = false;
+            FIRST_RUN = false;
 
             writeToJsonFile(path, data, { flag: "w" });
           }
@@ -113,10 +113,10 @@ export default defineConfig({
             // Assume there was a JSON file from the previous run.
             // This file is not meaningful because we need a current snapshot.
             // TODO: Add a unique timestamp to each file for visualization upload.
-            data = firstRun ? [] : JSON.parse(readFileSync(path, "utf8"));
+            data = FIRST_RUN ? [] : JSON.parse(readFileSync(path, "utf8"));
             data = data.concat(dataArr);
             data = JSON.stringify(data, null, 2);
-            firstRun = false;
+            FIRST_RUN = false;
 
             writeToJsonFile(path, data);
           }
