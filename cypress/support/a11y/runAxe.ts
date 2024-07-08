@@ -4,10 +4,21 @@ import { Result } from "axe-core";
 
 import { defaultContext, defaultAxeConfig } from "./defaultAxeConfig";
 
-const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
-  // Destructure data points from violation objects to create readable output
+type RunAxeConfigType = {
+  currentURL: string;
+  writeViolationsToFile: boolean;
+};
+
+let runAxeConfig: RunAxeConfigType = {
+  currentURL: "",
+  writeViolationsToFile: false,
+};
+
+const printAxeViolationsToConsole = (violations: Result[]) => {
+  // TODO: Add a unique timestamp to each file for visualization upload.
   const violationData = violations.map(
     ({ id, description, impact, nodes, tags }) => ({
+      url: runAxeConfig.currentURL,
       id,
       description,
       impact,
@@ -16,63 +27,51 @@ const printViolations = (violations: Result[], skipTestFailure?: boolean) => {
     })
   );
 
-  // Print a custom message to the console in report mode
+  // Print a message highlighting number of violations on the page
   // https://github.com/component-driven/cypress-axe#reportOnly-optional-defaults-to-false
-  if (skipTestFailure) {
-    cy.task(
-      "log",
-      `
+  cy.task(
+    "log",
+    `
 ========================================
-* A11Y REPORT-ONLY MODE
+* A11Y VIOLATIONS REPORTED
+* ${runAxeConfig.currentURL}
 * ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
-        violations.length === 1 ? "was" : "were"
-      } logged to stdout.
+      violations.length === 1 ? "was" : "were"
+    } logged to stdout.
 ========================================`
-    );
+  );
+
+  cy.task("logAxeViolationsToConsole", violationData);
+
+  if (runAxeConfig.writeViolationsToFile) {
+    cy.task("saveAxeViolationsToJson", violationData);
   }
-
-  // Print violations to the console and throw in test
-  // https://github.com/component-driven/cypress-axe#using-the-violationcallback-argument
-  if (!skipTestFailure) {
-    cy.task(
-      "log",
-      `
-========================================
-* A11Y VIOLATION(S)
-* ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
-        violations.length === 1 ? "was" : "were"
-      } thrown.
-========================================`
-    );
-  }
-
-  // Print the violations to custom logging function
-  cy.task("logA11y", violationData);
-};
-
-const reportOnViolation = (violations: Result[]) => {
-  printViolations(violations, true);
-};
-
-const throwOnViolation = (violations: Result[]) => {
-  printViolations(violations);
 };
 
 const runAxe = (
-  { reportOnly, axeContext, axeConfig, callback } = {
-    reportOnly: undefined,
+  {
+    reportOnly = false,
+    writeToFile = false,
+    axeContext,
+    axeConfig,
+    callback,
+  } = {
     axeContext: undefined,
     axeConfig: undefined,
     callback: undefined,
   }
 ) => {
+  cy.url().then((url) => {
+    runAxeConfig.currentURL = url;
+    runAxeConfig.writeViolationsToFile = writeToFile;
+  });
   cy.injectAxe();
   cy.checkA11y(
     axeContext ?? defaultContext,
     axeConfig ?? defaultAxeConfig,
-    callback ?? reportOnly ? reportOnViolation : throwOnViolation,
+    callback ?? printAxeViolationsToConsole,
     reportOnly
   );
 };
 
-export { runAxe, reportOnViolation, throwOnViolation };
+export { runAxe };
