@@ -19,7 +19,7 @@ const printAxeViolationsToConsole = (violations: Result[]) => {
   const violationData = violations.map(
     ({ id, description, impact, nodes, tags }) => ({
       url: runAxeConfig.currentURL,
-      violationId: id,
+      id,
       description,
       impact,
       nodes: nodes.length,
