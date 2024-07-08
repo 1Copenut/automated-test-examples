@@ -4,7 +4,13 @@ import { existsSync, mkdirSync, readFileSync, writeFile } from "fs";
 
 import { capitalizeFirstLetter } from "./cypress/support/helpers/capitalizeFirstLetter.js";
 
-let FIRST_RUN = true;
+type TestConfigType = {
+  firstRun: boolean;
+};
+
+let testConfig: TestConfigType = {
+  firstRun: true,
+};
 
 function writeToJsonFile(
   filePath: string,
@@ -104,19 +110,19 @@ export default defineConfig({
           if (!pathExists) {
             data = dataArr;
             data = JSON.stringify(data, null, 2);
-            FIRST_RUN = false;
+            testConfig.firstRun = false;
 
             writeToJsonFile(path, data, { flag: "w" });
           }
 
           if (pathExists) {
-            // Assume there was a JSON file from the previous run.
-            // This file is not meaningful because we need a current snapshot.
-            // TODO: Add a unique timestamp to each file for visualization upload.
-            data = FIRST_RUN ? [] : JSON.parse(readFileSync(path, "utf8"));
+            // If there was a JSON file from the previous run, we'll zero it out first
+            data = testConfig.firstRun
+              ? []
+              : JSON.parse(readFileSync(path, "utf8"));
             data = data.concat(dataArr);
             data = JSON.stringify(data, null, 2);
-            FIRST_RUN = false;
+            testConfig.firstRun = false;
 
             writeToJsonFile(path, data);
           }
