@@ -15,6 +15,7 @@ declare global {
        * console output for debugging.
        *
        * @param reportOnly Set to true to report violations to the console without an exit 1 test failure.
+       * @param writeToFile Set to true to write violations to axeViolations.json
        * @param axeContext Pass a string or object with include / exclude keys to set the target(s) to be evaluated.
        * @param axeConfig Add or change rules in the axe.run config object
        * @param callback Provide a custom callback function to handle the violations array from the Results object
@@ -23,6 +24,7 @@ declare global {
        */
       runAxe(options?: {
         reportOnly?: boolean;
+        writeToFile?: boolean;
         axeContext?: ContextObject | string;
         axeConfig?: RunOptions;
         callback?: (violations: Result[]) => void;

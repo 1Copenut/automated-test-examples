@@ -4,13 +4,22 @@ import { Result } from "axe-core";
 
 import { defaultContext, defaultAxeConfig } from "./defaultAxeConfig";
 
-let currentURL: string;
+type RunAxeConfigType = {
+  currentURL: string;
+  writeViolationsToFile: boolean;
+};
+
+let runAxeConfig: RunAxeConfigType = {
+  currentURL: "",
+  writeViolationsToFile: false,
+};
 
 const printAxeViolationsToConsole = (violations: Result[]) => {
-  // Destructure data points from violation objects to create readable output
+  // TODO: Add a unique timestamp to each file for visualization upload.
   const violationData = violations.map(
     ({ id, description, impact, nodes, tags }) => ({
-      id,
+      url: runAxeConfig.currentURL,
+      violationId: id,
       description,
       impact,
       nodes: nodes.length,
@@ -25,30 +34,36 @@ const printAxeViolationsToConsole = (violations: Result[]) => {
     `
 ========================================
 * A11Y VIOLATIONS REPORTED
-* ${currentURL}
+* ${runAxeConfig.currentURL}
 * ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
       violations.length === 1 ? "was" : "were"
     } logged to stdout.
 ========================================`
   );
 
-  // Print the violations to custom logging function
   cy.task("logAxeViolationsToConsole", violationData);
 
-  // Save the violations to JSON file
-  cy.task("saveAxeViolationsToJson", violationData);
+  if (runAxeConfig.writeViolationsToFile) {
+    cy.task("saveAxeViolationsToJson", violationData);
+  }
 };
 
 const runAxe = (
-  { reportOnly, axeContext, axeConfig, callback } = {
-    reportOnly: undefined,
+  {
+    reportOnly = false,
+    writeToFile = false,
+    axeContext,
+    axeConfig,
+    callback,
+  } = {
     axeContext: undefined,
     axeConfig: undefined,
     callback: undefined,
   }
 ) => {
   cy.url().then((url) => {
-    currentURL = url;
+    runAxeConfig.currentURL = url;
+    runAxeConfig.writeViolationsToFile = writeToFile;
   });
   cy.injectAxe();
   cy.checkA11y(

@@ -6,7 +6,7 @@ describe("A11y sitemap test", function () {
       pages.forEach((page) => {
         cy.visit(page);
         cy.task("log", `Evaluating ${page} for a11y`);
-        cy.runAxe({ reportOnly: true });
+        cy.runAxe({ reportOnly: true, writeToFile: true });
       });
     });
   });
