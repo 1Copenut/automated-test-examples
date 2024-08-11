@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'selenium-webdriver'
-require 'minitest'
+require 'minitest/autorun'
 
-# Test Google search interaction with Chrome
+# Test Google search interaction with Firefox. It's less flaky.
 class GoogleSearchTest < Minitest::Test
   def setup
-    @driver = Selenium::WebDriver.for :chrome
+    @driver = Selenium::WebDriver.for :firefox
     @url = 'https://www.google.com/'
     @driver.manage.timeouts.implicit_wait = 30
   end
