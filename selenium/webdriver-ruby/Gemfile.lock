@@ -1,0 +1,30 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    base64 (0.2.0)
+    logger (1.6.6)
+    power_assert (2.0.5)
+    rake (13.2.1)
+    rexml (3.4.1)
+    rubyzip (2.4.1)
+    selenium-webdriver (4.29.1)
+      base64 (~> 0.2)
+      logger (~> 1.4)
+      rexml (~> 3.2, >= 3.2.5)
+      rubyzip (>= 1.2.2, < 3.0)
+      websocket (~> 1.0)
+    test-unit (3.6.7)
+      power_assert
+    websocket (1.2.11)
+
+PLATFORMS
+  arm64-darwin-23
+  ruby
+
+DEPENDENCIES
+  rake
+  selenium-webdriver
+  test-unit
+
+BUNDLED WITH
+   2.5.17
