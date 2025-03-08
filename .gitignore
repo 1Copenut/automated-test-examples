@@ -2,3 +2,4 @@
 /cypress/screenshots/
 /cypress/videos/
 /cypress/data/
+.DS_Store
