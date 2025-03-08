@@ -8,7 +8,7 @@ class SeleniumChartTest < Test::Unit::TestCase
   def setup
     @url = 'https://finance.yahoo.com/quote/CSCO/'
     @driver = Selenium::WebDriver.for :firefox
-    action = Selenium::WebDriver::ActionBuilder
+    # action = Selenium::WebDriver::ActionBuilder
 
     @driver.get(@url)
     @driver.manage.window.resize_to(1280, 720)
