@@ -1,6 +1,6 @@
 /// <reference types="../"/>
 
-import { Result } from "axe-core";
+import { ContextObject, Result, RunOptions } from "axe-core";
 
 import { defaultContext, defaultAxeConfig } from "./defaultAxeConfig";
 
@@ -48,19 +48,21 @@ const printAxeViolationsToConsole = (violations: Result[]) => {
   }
 };
 
-const runAxe = (
-  {
-    reportOnly = false,
-    writeToFile = false,
-    axeContext,
-    axeConfig,
-    callback,
-  } = {
-    axeContext: undefined,
-    axeConfig: undefined,
-    callback: undefined,
-  }
-) => {
+type RunAxeOptions = {
+  reportOnly?: boolean;
+  writeToFile?: boolean;
+  axeContext?: ContextObject | string;
+  axeConfig?: RunOptions;
+  callback?: (violations: Result[]) => void;
+};
+
+const runAxe = ({
+  reportOnly = false,
+  writeToFile = false,
+  axeContext,
+  axeConfig,
+  callback,
+}: RunAxeOptions = {}) => {
   cy.url().then((url) => {
     runAxeConfig.currentURL = url;
     runAxeConfig.writeViolationsToFile = writeToFile;

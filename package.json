@@ -9,7 +9,8 @@
     "cypress:dev": "start-server-and-test start 8080 cypress:open",
     "cypress:open": "cypress open",
     "cypress:run:chrome": "cypress run --browser chrome",
-    "lint": "tsc --noEmit --pretty --allowJs --strict cypress/**/*.cy.ts"
+    "lint": "tsc --noEmit --pretty -p cypress",
+    "cypress:run": "cypress run"
   },
   "type": "module",
   "repository": {
@@ -30,13 +31,21 @@
   },
   "homepage": "https://github.com/1Copenut/cypress-test#readme",
   "devDependencies": {
-    "@types/node": "^20.14.10",
-    "axe-core": "^4.8.2",
-    "cypress": "^15.15.0",
+    "@types/node": "^22.20.5",
+    "axe-core": "^4.14.0",
+    "cypress": "^16.2.1",
     "cypress-axe": "^1.7.0",
-    "cypress-real-events": "^1.10.3",
+    "cypress-real-events": "^1.15.1",
     "http-server": "^14.1.0",
-    "start-server-and-test": "^2.0.3",
-    "typescript": "^4.9.4"
+    "start-server-and-test": "^3.0.13",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "cypress-axe": {
+      "cypress": "$cypress"
+    }
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

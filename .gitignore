@@ -6,3 +6,4 @@
 .env*
 /cypress.env.json
 /cypress/downloads/
+*.deb
