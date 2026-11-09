@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>127.0.0.1:8080/index.html</loc>
+    <loc>http://127.0.0.1:8080/index.html</loc>
     <lastmod>2022-06-04</lastmod>
   </url>
   <url>
-    <loc>127.0.0.1:8080/anycorp/index.html</loc>
+    <loc>http://127.0.0.1:8080/anycorp/index.html</loc>
     <lastmod>2022-06-04</lastmod>
   </url>
   <url>
-    <loc>127.0.0.1:8080/anycorp/generic.html</loc>
+    <loc>http://127.0.0.1:8080/anycorp/generic.html</loc>
     <lastmod>2022-06-04</lastmod>
   </url>
   <url>
-    <loc>127.0.0.1:8080/anycorp/semantic.html</loc>
+    <loc>http://127.0.0.1:8080/anycorp/semantic.html</loc>
     <lastmod>2022-06-04</lastmod>
   </url>
 </urlset>

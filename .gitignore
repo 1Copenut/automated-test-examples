@@ -3,3 +3,6 @@
 /cypress/videos/
 /cypress/data/
 .DS_Store
+.env*
+/cypress.env.json
+/cypress/downloads/
