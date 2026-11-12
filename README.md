@@ -6,13 +6,14 @@
 * Apply findings to a simple web server, maybe [Express](https://expressjs.com)
 
 ## Getting started
-Requires Node 22 or newer and Google Chrome for the `chrome` scripts.
+Requires Node 22.6 or newer and Google Chrome for the `chrome` scripts.
 
 ```bash
 npm ci
 npm run cypress:ci    # start the server, run all specs headless in Chrome
 npm run cypress:dev   # start the server and open the Cypress app
-npm run lint          # type-check the Cypress specs
+npm run lint          # type-check the specs, cypress.config.ts and unit tests
+npm run test:unit     # unit tests for the reporter's security helpers (no browser)
 ```
 
 * `npm run cypress:run` uses Cypress's default browser (Electron) instead of Chrome.

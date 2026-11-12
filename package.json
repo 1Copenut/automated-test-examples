@@ -9,7 +9,8 @@
     "cypress:dev": "start-server-and-test start 8080 cypress:open",
     "cypress:open": "cypress open",
     "cypress:run:chrome": "cypress run --browser chrome",
-    "lint": "tsc --noEmit --pretty -p cypress",
+    "lint": "tsc --noEmit --pretty -p cypress && tsc --noEmit --pretty -p . && tsc --pretty -p test",
+    "test:unit": "node --experimental-strip-types --no-warnings --test 'test/**/*.test.ts'",
     "cypress:run": "cypress run"
   },
   "type": "module",
@@ -46,6 +47,6 @@
     }
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22.6"
   }
 }

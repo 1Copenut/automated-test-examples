@@ -29,17 +29,12 @@ const printAxeViolationsToConsole = (violations: Result[]) => {
 
   // Print a message highlighting number of violations on the page
   // https://github.com/component-driven/cypress-axe#reportOnly-optional-defaults-to-false
-  cy.task(
-    "log",
-    `
-========================================
-* A11Y VIOLATIONS REPORTED
-* ${runAxeConfig.currentURL}
-* ${violations.length} violation${violations.length === 1 ? "" : "s"} ${
-      violations.length === 1 ? "was" : "were"
-    } logged to stdout.
-========================================`
-  );
+  // The banner is built in Node so no multi-line text crosses the task
+  // boundary; the `log` task flattens newlines to prevent log forging.
+  cy.task("logA11ySummary", {
+    url: runAxeConfig.currentURL,
+    count: violations.length,
+  });
 
   cy.task("logAxeViolationsToConsole", violationData);
 
