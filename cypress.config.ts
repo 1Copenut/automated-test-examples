@@ -8,12 +8,12 @@ import {
   parseViolations,
   readBodyCapped,
   sanitizeForLog,
+  VIOLATIONS_REPORT_PATH,
   validateBaseUrl,
-  writeFileInside,
+  writeViolationsReport,
   type SafeViolation,
 } from "./cypress/support/helpers/security.js";
 
-const VIOLATIONS_FILE = "cypress/data/axeViolations.json";
 const DIVIDER = "========================================";
 
 // Violations saved during the current run. Kept in memory and written in
@@ -113,7 +113,7 @@ export default defineConfig({
           if (violations.length > room && !overflowWarned) {
             overflowWarned = true;
             console.warn(
-              `saveAxeViolationsToJson: report is capped at ${MAX_TOTAL_VIOLATIONS} violations; later results are not saved to ${VIOLATIONS_FILE}.`
+              `saveAxeViolationsToJson: report is capped at ${MAX_TOTAL_VIOLATIONS} violations; later results are not saved to ${VIOLATIONS_REPORT_PATH}.`
             );
           }
           collected.push(...violations.slice(0, Math.max(room, 0)));
@@ -121,9 +121,8 @@ export default defineConfig({
           // JSON.stringify escapes control characters, so the stored data
           // keeps its original values. Consumers must escape for their
           // own output (e.g. HTML) when rendering it.
-          writeFileInside(
+          writeViolationsReport(
             config.projectRoot,
-            VIOLATIONS_FILE,
             JSON.stringify(collected, null, 2)
           );
           return null;

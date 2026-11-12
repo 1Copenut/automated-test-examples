@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import {
+  chmodSync,
   lstatSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
   readdirSync,
+  realpathSync,
   rmSync,
   statSync,
   symlinkSync,
@@ -22,8 +24,11 @@ import {
   readBodyCapped,
   resolveInside,
   sanitizeForLog,
+  VIOLATIONS_REPORT_DIR,
+  VIOLATIONS_REPORT_FILE,
+  VIOLATIONS_REPORT_PATH,
   validateBaseUrl,
-  writeFileInside,
+  writeViolationsReport,
 } from "../cypress/support/helpers/security.ts";
 
 const violation = (overrides: Record<string, unknown> = {}) => ({
@@ -132,6 +137,16 @@ describe("resolveInside", () => {
     assert.throws(() => resolveInside("/root", "a/../../x"));
     assert.throws(() => resolveInside("/root", "/etc/passwd"));
   });
+
+  it("requires an absolute root", () => {
+    assert.throws(() => resolveInside("relative", "a"), /absolute/);
+  });
+
+  it("rejects NUL bytes in any segment", () => {
+    const nul = String.fromCharCode(0);
+    assert.throws(() => resolveInside(`/root${nul}`, "a"), /NUL/);
+    assert.throws(() => resolveInside("/root", `a${nul}.json`), /NUL/);
+  });
 });
 
 describe("extractSameOriginUrls", () => {
@@ -192,13 +207,17 @@ describe("validateBaseUrl", () => {
   });
 });
 
-describe("writeFileInside", () => {
+describe("writeViolationsReport", () => {
   let root: string;
   let outside: string;
+  let reportDir: string;
+  let reportFile: string;
 
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), "a11y-root-"));
-    outside = mkdtempSync(join(tmpdir(), "a11y-outside-"));
+    root = realpathSync(mkdtempSync(join(tmpdir(), "a11y-root-")));
+    outside = realpathSync(mkdtempSync(join(tmpdir(), "a11y-outside-")));
+    reportDir = join(root, ...VIOLATIONS_REPORT_DIR);
+    reportFile = join(reportDir, VIOLATIONS_REPORT_FILE);
   });
 
   afterEach(() => {
@@ -206,55 +225,79 @@ describe("writeFileInside", () => {
     rmSync(outside, { recursive: true, force: true });
   });
 
-  it("creates the directory and writes the file with owner-only permissions", () => {
-    const path = writeFileInside(root, "cypress/data/out.json", "[]");
-    assert.equal(readFileSync(path, "utf8"), "[]");
-    assert.equal(statSync(path).mode & 0o777, 0o600);
-    assert.deepEqual(readdirSync(join(root, "cypress/data")), ["out.json"]);
+  it("writes only to the fixed report path", () => {
+    assert.equal(VIOLATIONS_REPORT_PATH, "cypress/data/axeViolations.json");
+    assert.equal(writeViolationsReport(root, "[]"), reportFile);
+    assert.equal(readFileSync(reportFile, "utf8"), "[]");
   });
 
-  it("overwrites an existing file", () => {
-    writeFileInside(root, "out.json", "first");
-    writeFileInside(root, "out.json", "second");
-    assert.equal(readFileSync(join(root, "out.json"), "utf8"), "second");
+  it("uses owner-only permissions and leaves no temp files", () => {
+    writeViolationsReport(root, "[]");
+    assert.equal(statSync(reportFile).mode & 0o777, 0o600);
+    assert.equal(statSync(reportDir).mode & 0o777, 0o700);
+    assert.deepEqual(readdirSync(reportDir), [VIOLATIONS_REPORT_FILE]);
   });
 
-  it("replaces a symlinked target instead of writing through it", () => {
+  it("tightens a pre-existing group/world-writable report directory", () => {
+    mkdirSync(reportDir, { recursive: true });
+    chmodSync(reportDir, 0o777);
+    writeViolationsReport(root, "[]");
+    assert.equal(statSync(reportDir).mode & 0o777, 0o700);
+  });
+
+  it("overwrites an existing report", () => {
+    writeViolationsReport(root, "first");
+    writeViolationsReport(root, "second");
+    assert.equal(readFileSync(reportFile, "utf8"), "second");
+  });
+
+  it("replaces a symlinked report file instead of writing through it", () => {
     const victim = join(outside, "victim.txt");
     writeFileSync(victim, "original");
-    mkdirSync(join(root, "data"));
-    symlinkSync(victim, join(root, "data", "out.json"));
+    mkdirSync(reportDir, { recursive: true });
+    symlinkSync(victim, reportFile);
 
-    writeFileInside(root, "data/out.json", "payload");
+    writeViolationsReport(root, "payload");
 
     assert.equal(readFileSync(victim, "utf8"), "original");
-    assert.equal(lstatSync(join(root, "data", "out.json")).isSymbolicLink(), false);
+    assert.equal(lstatSync(reportFile).isSymbolicLink(), false);
   });
 
-  it("refuses a symlinked parent directory", () => {
-    symlinkSync(outside, join(root, "data"));
-    assert.throws(() => writeFileInside(root, "data/out.json", "payload"), /symlink/);
+  it("refuses a symlinked report directory", () => {
+    mkdirSync(join(root, "cypress"));
+    symlinkSync(outside, reportDir);
+    assert.throws(() => writeViolationsReport(root, "payload"), /symlink/);
     assert.deepEqual(readdirSync(outside), []);
   });
 
-  it("refuses a directory that resolves outside the root via a symlinked ancestor", () => {
+  it("refuses a report directory reached through a symlinked ancestor", () => {
     mkdirSync(join(outside, "data"));
     symlinkSync(outside, join(root, "cypress"));
     assert.throws(
-      () => writeFileInside(root, "cypress/data/out.json", "payload"),
+      () => writeViolationsReport(root, "payload"),
       /outside project root/
     );
     assert.deepEqual(readdirSync(join(outside, "data")), []);
   });
 
-  it("refuses paths that escape the root", () => {
-    assert.throws(() => writeFileInside(root, "../escape.json", "x"));
+  it("refuses when the report path is a file, not a directory", () => {
+    mkdirSync(join(root, "cypress"));
+    writeFileSync(reportDir, "not a dir");
+    assert.throws(() => writeViolationsReport(root, "payload"));
+  });
+
+  it("rejects a relative, missing or non-directory project root", () => {
+    assert.throws(() => writeViolationsReport("relative/root", "x"), /absolute/);
+    assert.throws(() => writeViolationsReport(join(root, "missing"), "x"), /ENOENT/);
+    const file = join(root, "file.txt");
+    writeFileSync(file, "x");
+    assert.throws(() => writeViolationsReport(file, "x"), /not a directory/);
   });
 
   it("enforces the byte limit on UTF-8 size, not string length", () => {
     // 4 characters, 12 bytes.
-    assert.throws(() => writeFileInside(root, "out.json", "€€€€", 10), /limit/);
-    assert.doesNotThrow(() => writeFileInside(root, "out.json", "€€€", 10));
+    assert.throws(() => writeViolationsReport(root, "€€€€", 10), /limit/);
+    assert.doesNotThrow(() => writeViolationsReport(root, "€€€", 10));
   });
 });
 
