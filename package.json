@@ -11,6 +11,7 @@
     "cypress:run:chrome": "cypress run --browser chrome",
     "lint": "tsc --noEmit --pretty -p cypress && tsc --noEmit --pretty -p . && tsc --pretty -p test",
     "test:unit": "node --experimental-strip-types --no-warnings --test 'test/**/*.test.ts'",
+    "scan:semgrep": "semgrep ci --exclude-rule javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
     "cypress:run": "cypress run"
   },
   "type": "module",

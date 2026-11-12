@@ -1,4 +1,6 @@
+import { randomBytes } from "crypto";
 import {
+  chmodSync,
   closeSync,
   constants,
   lstatSync,
@@ -7,17 +9,10 @@ import {
   realpathSync,
   renameSync,
   rmSync,
+  statSync,
   writeSync,
 } from "fs";
-import {
-  basename,
-  dirname,
-  isAbsolute,
-  join,
-  relative,
-  resolve,
-  sep,
-} from "path";
+import { isAbsolute, relative, resolve, sep } from "path";
 
 export const MAX_LOG_LENGTH = 2000;
 export const MAX_VIOLATIONS = 1000; // per task call
@@ -102,10 +97,31 @@ export function parseViolations(input: unknown): SafeViolation[] | null {
 }
 
 /**
+ * Location of the violations report, relative to the project root.
+ * Deliberately a constant: callers cannot choose where the report goes.
+ */
+export const VIOLATIONS_REPORT_DIR = ["cypress", "data"] as const;
+export const VIOLATIONS_REPORT_FILE = "axeViolations.json";
+export const VIOLATIONS_REPORT_PATH = [
+  ...VIOLATIONS_REPORT_DIR,
+  VIOLATIONS_REPORT_FILE,
+].join("/");
+
+/**
  * Resolve `target` against `root` and throw if it escapes `root`.
+ * `root` must be absolute; no segment may contain a NUL byte.
  * This is a lexical check only; it does not detect symlinks.
  */
 export function resolveInside(root: string, ...target: string[]): string {
+  for (const segment of [root, ...target]) {
+    if (segment.includes("\0")) {
+      throw new Error("Path contains a NUL byte");
+    }
+  }
+  if (!isAbsolute(root)) {
+    throw new Error("Root path must be absolute");
+  }
+  // `full` is verified to stay inside `base` before it is returned.
   const base = resolve(root);
   const full = resolve(base, ...target);
   if (!isInside(base, full)) {
@@ -120,17 +136,50 @@ function isInside(base: string, full: string): boolean {
 }
 
 /**
- * Write `data` to `relPath` under `root` without following symlinks.
- *
- * - The parent directory is created if needed, must not be a symlink,
- *   and must really (after resolving symlinks) live inside `root`.
- * - The data goes to a fresh temp file opened with O_EXCL | O_NOFOLLOW,
- *   then is renamed over the target. rename() replaces a symlink at the
- *   target rather than writing through it.
+ * Ensure `dir` is a real directory owned by the current user and not
+ * writable by anyone else. mkdir's mode only applies when it creates the
+ * directory, so a pre-existing world-writable one is tightened here.
+ * Returns its identity so it can be re-checked before the final rename.
  */
-export function writeFileInside(
-  root: string,
-  relPath: string,
+function checkReportDir(dir: string): { dev: number; ino: number } {
+  const st = lstatSync(dir);
+  if (st.isSymbolicLink()) {
+    throw new Error(`Refusing to write through symlinked directory: ${dir}`);
+  }
+  if (!st.isDirectory()) {
+    throw new Error(`Report path is not a directory: ${dir}`);
+  }
+  // POSIX only; process.getuid is undefined on Windows.
+  if (typeof process.getuid === "function") {
+    if (st.uid !== process.getuid()) {
+      throw new Error(`Report directory is not owned by the current user: ${dir}`);
+    }
+    if ((st.mode & 0o077) !== 0) {
+      chmodSync(dir, 0o700);
+    }
+  }
+  return { dev: st.dev, ino: st.ino };
+}
+
+/**
+ * Write the axe violations report to cypress/data/axeViolations.json
+ * under `projectRoot`, without following symlinks.
+ *
+ * - The path is fixed (VIOLATIONS_REPORT_PATH); only the root is passed
+ *   in, and it must be an existing absolute directory.
+ * - The report directory is created if needed, must not be a symlink,
+ *   must really (after resolving symlinks) live inside the root, must be
+ *   owned by the current user, and is restricted to mode 0700.
+ * - Data goes to a randomly named temp file opened with
+ *   O_EXCL | O_NOFOLLOW (mode 0600), then is renamed over the report.
+ *   rename() replaces a symlink at the target rather than writing
+ *   through it.
+ * - The directory's identity is re-checked just before the rename. Node
+ *   has no openat()/renameat(), so a local attacker who can swap
+ *   directories inside the project between those calls is out of scope.
+ */
+export function writeViolationsReport(
+  projectRoot: string,
   data: string,
   maxBytes = MAX_JSON_BYTES
 ): string {
@@ -139,18 +188,24 @@ export function writeFileInside(
     throw new Error(`Refusing to write ${bytes} bytes (limit ${maxBytes})`);
   }
 
-  const target = resolveInside(root, relPath);
-  const dir = dirname(target);
+  const realRoot = realpathSync(resolveInside(projectRoot));
+  if (!statSync(realRoot).isDirectory()) {
+    throw new Error(`Project root is not a directory: ${realRoot}`);
+  }
+
+  const dir = resolveInside(realRoot, ...VIOLATIONS_REPORT_DIR);
+  const target = resolveInside(dir, VIOLATIONS_REPORT_FILE);
   mkdirSync(dir, { recursive: true, mode: 0o700 });
 
-  if (lstatSync(dir).isSymbolicLink()) {
-    throw new Error(`Refusing to write through symlinked directory: ${dir}`);
-  }
-  if (!isInside(realpathSync(root), realpathSync(dir))) {
+  const before = checkReportDir(dir);
+  if (!isInside(realRoot, realpathSync(dir))) {
     throw new Error(`Directory resolves outside project root: ${dir}`);
   }
 
-  const tmp = join(dir, `.${basename(target)}.${process.pid}.${Date.now()}.tmp`);
+  const tmp = resolveInside(
+    dir,
+    `.${VIOLATIONS_REPORT_FILE}.${randomBytes(12).toString("hex")}.tmp`
+  );
   const fd = openSync(
     tmp,
     constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW,
@@ -161,6 +216,11 @@ export function writeFileInside(
     writeSync(fd, data);
     closeSync(fd);
     open = false;
+
+    const after = lstatSync(dir);
+    if (after.isSymbolicLink() || after.dev !== before.dev || after.ino !== before.ino) {
+      throw new Error(`Report directory changed during write: ${dir}`);
+    }
     renameSync(tmp, target);
   } catch (err) {
     if (open) closeSync(fd);
